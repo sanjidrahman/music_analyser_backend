@@ -149,6 +149,13 @@ create_storage_dirs() {
 setup_database() {
     print_status "Setting up database..."
 
+    # Skip database setup during Render build
+    if [ "$RENDER" = "true" ]; then
+        print_status "Running on Render - skipping database setup during build"
+        print_status "Database migrations will run during startup"
+        return 0
+    fi
+
     # Activate virtual environment
     source .venv/bin/activate
 
