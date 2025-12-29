@@ -149,13 +149,6 @@ create_storage_dirs() {
 setup_database() {
     print_status "Setting up database..."
 
-    # Skip database setup during Render build
-    if [ "$RENDER" = "true" ]; then
-        print_status "Running on Render - skipping database setup during build"
-        print_status "Database migrations will run during startup"
-        return 0
-    fi
-
     # Activate virtual environment
     source .venv/bin/activate
 
@@ -165,15 +158,29 @@ setup_database() {
         print_status "Example: postgresql+asyncpg://username:password@localhost:5432/song_rating_db"
         print_status "After updating, run: alembic upgrade head"
     else
-        # Generate initial migration
-        print_status "Generating database migration..."
-        alembic revision --autogenerate -m "Initial migration"
-
-        # Run migrations
-        print_status "Running database migrations..."
-        alembic upgrade head
-
-        print_success "Database setup completed"
+        # Check if database is up to date
+        print_status "Checking database migration status..."
+        
+        if alembic current 2>/dev/null | grep -q "head"; then
+            print_success "Database is already up to date"
+        else
+            print_status "Database needs migrations..."
+            
+            # Try to upgrade first
+            print_status "Running database migrations..."
+            if alembic upgrade head 2>/dev/null; then
+                print_success "Database migrations applied successfully"
+            else
+                # If upgrade fails, might need initial migration
+                print_status "Generating initial migration..."
+                alembic revision --autogenerate -m "Initial migration"
+                
+                print_status "Running database migrations..."
+                alembic upgrade head
+                
+                print_success "Database setup completed"
+            fi
+        fi
     fi
 }
 
