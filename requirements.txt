@@ -1,6 +1,7 @@
 # FastAPI and ASGI server
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
+bcrypt==5.0.0
 
 # Database
 sqlalchemy==2.0.23
@@ -10,7 +11,7 @@ psycopg2==2.9.11
 
 # Authentication and Security
 python-jose[cryptography]==3.3.0
-# passlib[bcrypt]==1.7.4
+passlib[bcrypt]==1.7.4
 python-multipart==0.0.6
 
 # Configuration and Validation
