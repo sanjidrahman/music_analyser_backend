@@ -1,6 +1,6 @@
 import os
 from typing import List, Optional, Union
-from pydantic import field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     app_name: str = "Song Rating API"
     app_version: str = "1.0.0"
     debug: bool = False
+    port: int = Field(default=8000, env="PORT")
 
     # Database Configuration
     database_url: str = "postgresql+asyncpg://user:password@localhost:5432/song_rating_db"
