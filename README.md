@@ -2,6 +2,16 @@
 
 A comprehensive FastAPI backend for song rating and singing analysis that allows users to upload songs, extract segments, record themselves singing, and receive detailed performance analysis based on pitch accuracy, rhythm, tone similarity, and timing.
 
+## Key Features
+
+- 🎤 **Karaoke Practice with AI Feedback** - Upload any song and get objective vocal performance scores
+- 🎵 **Automatic Vocal Separation** - Uses Spleeter to isolate vocals for accurate analysis
+- 📊 **Detailed Performance Metrics** - Pitch, rhythm, tone, and timing analysis with visualization
+- 🔒 **Flexible Authentication** - Optional auth for casual use, full history tracking for registered users
+- ⏱️ **Real-time Pitch Tracking** - Frame-by-frame pitch comparison with difference visualization
+- 📈 **Progress Tracking** - View statistics, best scores, and improvement over time
+- 🎯 **Smart Analysis** - Dynamic Time Warping and MFCC for professional-grade vocal assessment
+
 ## Features
 
 - **User Authentication**: JWT-based authentication with 7-day token expiry
@@ -28,7 +38,7 @@ A comprehensive FastAPI backend for song rating and singing analysis that allows
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.9.6
 - PostgreSQL 12+
 - FFmpeg (for audio processing)
 - At least 2GB RAM for audio processing
@@ -39,7 +49,7 @@ A comprehensive FastAPI backend for song rating and singing analysis that allows
 
 ```bash
 git clone <your-repo-url>
-cd song-rating-backend
+cd music_analyser_backend
 ./setup.sh
 ```
 
@@ -86,10 +96,18 @@ The API will be available at:
 - `POST /api/upload-and-process` - Upload song and extract segment (no auth required)
 - `GET /api/formats/supported` - Get supported formats and limits
 
+### Segments
+- `GET /api/segments` - Get user's segments (requires auth)
+- `GET /api/segments/{id}` - Get specific segment (requires auth)
+- `DELETE /api/segments/{id}` - Delete segment and related attempts (requires auth)
+
 ### Recording
 - `POST /api/recording/upload` - Upload user recording (no auth required)
 - `GET /api/recording/` - Get recordings (authenticated users only)
 - `GET /api/recording/{id}` - Get specific recording
+
+### Audio Streaming
+- `GET /api/audio/{file_path}` - Stream audio files from storage
 
 ### Analysis
 - `POST /api/analyze` - Analyze recording against original (requires auth)
@@ -196,39 +214,10 @@ The analysis system uses a sophisticated multi-faceted approach:
 ```bash
 # Clone repository
 git clone <repository-url>
-cd song-rating-backend
+cd music_analyser_backend
 
 # Run setup script
-./setup.sh --with-tests
-```
-
-### Running Tests
-
-```bash
-# Activate virtual environment
-source venv/bin/activate
-
-# Run all tests
-pytest tests/ -v
-
-# Run with coverage
-pytest tests/ --cov=app --cov-report=html
-```
-
-### Code Quality
-
-```bash
-# Format code
-black app/ tests/
-
-# Sort imports
-isort app/ tests/
-
-# Lint code
-flake8 app/ tests/
-
-# Type checking
-mypy app/
+./setup.sh
 ```
 
 ### Database Migrations
@@ -263,34 +252,6 @@ alembic downgrade -1
    ```bash
    alembic upgrade head
    ```
-
-4. **Run with Gunicorn**:
-   ```bash
-   gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker
-   ```
-
-### Docker Deployment
-
-```dockerfile
-# Dockerfile example
-FROM python:3.9-slim
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application
-COPY . .
-
-# Run application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
 
 ### Environment Variables
 
@@ -352,28 +313,3 @@ Enable debug logging by setting `DEBUG=True` in `.env`:
 import logging
 logging.basicConfig(level=logging.DEBUG)
 ```
-
-## API Examples
-
-See [API_EXAMPLES.md](API_EXAMPLES.md) for detailed API usage examples with curl, Python, and JavaScript.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Run the test suite
-6. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For support, please:
-- Check the troubleshooting section
-- Review the API documentation
-- Open an issue on GitHub
-- Contact the development team
