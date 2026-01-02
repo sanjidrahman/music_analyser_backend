@@ -82,7 +82,6 @@ alembic upgrade head
 The API will be available at:
 - **API**: http://localhost:8000
 - **Documentation**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
 
 ## API Endpoints
 
