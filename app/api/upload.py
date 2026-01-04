@@ -94,7 +94,7 @@ async def upload_and_process_song(
             vocal_file_path = os.path.join(settings.storage_vocals_path, vocal_filename)
 
             # Process audio (extract segment and separate vocals)
-            processing_results = AudioProcessor.process_uploaded_song(
+            processing_results = AudioProcessor.process_song(
                 temp_file_path,
                 segment_file_path,
                 vocal_file_path,
