@@ -203,8 +203,15 @@ main() {
     print_status "Starting setup process..."
     echo
 
+    # Make script executable if it isn't already
+    chmod +x "$0" 2>/dev/null || true
+
     # Change to project directory
     cd "$(dirname "$0")"
+
+    echo
+    print_warning "Setup will now check your system for required dependencies..."
+    echo
 
     # Run checks
     check_python
@@ -240,12 +247,37 @@ main() {
 
     print_success "Setup completed successfully!"
     echo
-    print_status "Next steps:"
-    print_status "1. Edit .env file with your database URL and JWT secret key"
-    print_status "2. Run database migrations: alembic upgrade head"
-    print_status "3. Start the server: ./run.sh"
+    print_status "================================"
     echo
-    print_status "API Documentation will be available at: http://localhost:8000/docs"
+    print_status "📋 Next Steps:"
+    echo
+    print_status "1️⃣  Edit .env file:"
+    print_status "   - Update DATABASE_URL (or use the cloud database already configured)"
+    print_status "   - Change JWT_SECRET_KEY to a secure random string"
+    print_status "   - Generate secret: openssl rand -hex 32"
+    echo
+    print_status "2️⃣  If using local PostgreSQL, create the database:"
+    print_status "   createdb song_rating_db"
+    echo
+    print_status "3️⃣  Run database migrations:"
+    print_status "   source .venv/bin/activate"
+    print_status "   alembic upgrade head"
+    echo
+    print_status "4️⃣  Start the server:"
+    print_status "   ./run.sh"
+    echo
+    print_status "🌐 API will be available at:"
+    print_status "   - API: http://localhost:8000"
+    print_status "   - Docs: http://localhost:8000/docs"
+    print_status "   - Health: http://localhost:8000/health"
+    echo
+    print_status "📚 For detailed setup instructions, see:"
+    print_status "   - LOCAL_SETUP.md (Native setup guide)"
+    print_status "   - DOCKER_SETUP.md (Docker setup - easiest method)"
+    echo
+    print_status "⚠️  Quick Docker alternative (no manual setup needed):"
+    print_status "   docker-compose up -d"
+    echo
 }
 
 # Run the script
