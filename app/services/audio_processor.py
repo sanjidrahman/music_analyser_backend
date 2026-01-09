@@ -86,7 +86,9 @@ class AudioProcessor:
                 vocals_path = os.path.join(temp_dir, input_filename, "vocals.wav")
                 
                 if os.path.exists(vocals_path):
-                    os.rename(vocals_path, vocals_output_path)
+                    # Ensure output directory exists
+                    os.makedirs(os.path.dirname(vocals_output_path), exist_ok=True)
+                    shutil.move(vocals_path, vocals_output_path)
                     return True
 
             return False
