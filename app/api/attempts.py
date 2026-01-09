@@ -135,6 +135,7 @@ async def get_attempt(
             tone_similarity=attempt.tone_similarity,
             timing_accuracy=attempt.timing_accuracy,
             detailed_analysis=attempt.detailed_analysis,
+            duration_warning=attempt.duration_warning,
             analysis_version=attempt.analysis_version,
             created_at=attempt.created_at
         )

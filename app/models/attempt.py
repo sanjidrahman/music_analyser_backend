@@ -24,6 +24,9 @@ class Attempt(Base):
     # Detailed analysis data (JSON)
     detailed_analysis = Column(JSON, nullable=True)
 
+    # Duration warning (JSONB)
+    duration_warning = Column(JSON, nullable=True)
+
     # Metadata
     analysis_version = Column(String, default="1.0")
     created_at = Column(DateTime(timezone=True), server_default=func.now())

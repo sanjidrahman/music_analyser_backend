@@ -36,6 +36,7 @@ class AttemptResponse(BaseModel):
     tone_similarity: float
     timing_accuracy: float
     detailed_analysis: Optional[Dict[str, Any]]
+    duration_warning: Optional[Dict[str, Any]]
     analysis_version: str
     created_at: datetime
 
