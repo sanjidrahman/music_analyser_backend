@@ -85,35 +85,22 @@ async def analyze_recording(
                 detail="Recording file not found"
             )
 
-        # Separate vocals from user recording if not already done
-        user_vocals_file = None
+        # Check if vocal file exists (should already be extracted during upload)
         if not recording.vocal_file_path:
-            # Generate vocal file path for user recording
-            recording_filename = os.path.basename(recording.file_path)
-            vocal_filename = f"vocals_user_recording_{recording.id}_{recording_filename}"
-            user_vocals_file = os.path.join(settings.storage_vocals_path, vocal_filename)
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Recording vocals not found. Please re-upload the recording."
+            )
 
-            # Separate vocals using existing function
-            os.makedirs(settings.storage_vocals_path, exist_ok=True)
-            vocals_success = AudioProcessor.separate_vocals(recording.file_path, user_vocals_file)
-
-            if vocals_success:
-                # Update recording with vocal file path
-                recording.vocal_file_path = user_vocals_file
-                await db.commit()
-        else:
-            # Use existing vocal file
-            user_vocals_file = recording.vocal_file_path
-
-        # Use vocal file if available, otherwise use original segment
+        # Use vocal file if available, otherwise use original files
         reference_file = segment.vocal_file_path if segment.vocal_file_path else segment.file_path
-        user_file = user_vocals_file if user_vocals_file else recording.file_path
+        recording_file = recording.vocal_file_path if recording.vocal_file_path else recording.file_path
 
         # Perform analysis
         try:
             analysis_results = AudioAnalyzer.analyze_singing_similarity(
                 reference_file,
-                recording.file_path
+                recording_file
             )
         except ProcessingError as e:
             raise HTTPException(
@@ -131,7 +118,8 @@ async def analyze_recording(
             rhythm_accuracy=analysis_results["rhythm_accuracy"],
             tone_similarity=analysis_results["tone_similarity"],
             timing_accuracy=analysis_results["timing_accuracy"],
-            detailed_analysis=analysis_results["detailed_analysis"]
+            detailed_analysis=analysis_results["detailed_analysis"],
+            duration_warning=analysis_results["duration_warning"] if "duration_warning" in analysis_results else None,
         )
 
         db.add(attempt)
@@ -149,6 +137,7 @@ async def analyze_recording(
             tone_similarity=attempt.tone_similarity,
             timing_accuracy=attempt.timing_accuracy,
             detailed_analysis=attempt.detailed_analysis,
+            duration_warning=attempt.duration_warning if attempt.duration_warning else None,
             analysis_version=attempt.analysis_version,
             created_at=attempt.created_at
         )
