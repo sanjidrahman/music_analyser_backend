@@ -17,6 +17,7 @@ class RecordingResponse(BaseModel):
     duration: float
     original_filename: str
     file_format: str
+    file_type: str
     sample_rate: Optional[int]
     channels: Optional[int]
     created_at: datetime

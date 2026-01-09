@@ -96,6 +96,7 @@ class FileService:
         duration: float,
         original_filename: str,
         file_format: str,
+        file_type: str,
         sample_rate: Optional[int] = None,
         channels: Optional[int] = None
     ) -> Recording:
@@ -108,6 +109,7 @@ class FileService:
             duration=duration,
             original_filename=original_filename,
             file_format=file_format,
+            file_type=file_type,
             sample_rate=sample_rate,
             channels=channels
         )

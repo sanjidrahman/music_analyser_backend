@@ -15,6 +15,7 @@ class Recording(Base):
     duration = Column(Float, nullable=False)
     original_filename = Column(String, nullable=False)
     file_format = Column(String, nullable=False)
+    file_type = Column(String, nullable=False)  # "recording" or "audio"
     sample_rate = Column(Integer, nullable=True)
     channels = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
